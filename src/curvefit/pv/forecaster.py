@@ -172,10 +172,11 @@ class LocalSmoothSimpleExtrapolateRM(ResidualModel):
 
         for i, row in data.iterrows():
             if np.isnan(row[outcome]):
-                df_sub = smooth[smooth['num_data'] == row['num_data']].copy()
+                df_sub = smooth[smooth['far_out'] == row['far_out']].copy()
                 if df_sub.empty:
                     new_val = corner_value
                 else:
+                    # new_val = np.nanmean(df_sub['residual_std'])
                     max_far_out = df_sub[~df_sub['residual_std'].isnull()]['far_out'].max()
                     new_val = np.nanmean(df_sub[df_sub['far_out'] == max_far_out]['residual_std'][-1:])
                 data.at[i, 'residual_std'] = new_val
